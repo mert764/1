@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101713">
+  <meta name="description" content="Quest 3 ve masaüstü için el hareketleriyle WebXR mimari keşif deneyimi.">
+  <title>ScaleWalk · WebXR Hand Locomotion</title>
+<link rel="stylesheet" href="./css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="ScaleWalk ana sayfa"><span class="brand-mark">S</span><span>ScaleWalk</span></a>
+      <span class="top-note">WEBXR · 1:70 ARCHITECTURAL WALKTHROUGH</span>
+      <span class="connection"><i></i> STATIC · HTTPS READY</span>
+    </header>
+
+    <section class="workspace">
+      <aside class="control-panel">
+        <div class="eyebrow">ELLE KONTROL EDİLEN NAVİGASYON</div>
+        <h1>Mekânı<br><em>keşfet.</em></h1>
+        <p class="intro">Mimari modeli birinci şahıs perspektifinde, el hareketlerinle dolaş.</p>
+
+        <div class="actions">
+          <button id="enter-vr" class="button button-primary" type="button"><span class="button-icon">◉</span> Enter VR <span class="button-arrow">↗</span></button>
+          <button id="start-camera" class="button button-secondary" type="button"><span class="button-icon">◎</span> Start Camera</button>
+          <button id="stop-camera" class="button button-quiet" type="button" disabled>Stop Camera</button>
+          <button id="reset-position" class="button button-quiet" type="button">Reset Position <span>↺</span></button>
+        </div>
+        <div class="notice" id="notice" role="status">Masaüstü el takibi için kamerayı başlat. Quest 3’te Enter VR’ı kullan.</div>
+
+        <section class="gesture-guide" aria-labelledby="gesture-heading">
+          <div class="section-heading"><span id="gesture-heading">HAREKETLER</span><span>01 — 03</span></div>
+          <div class="gesture-row"><span class="gesture-symbol pinch-symbol">⌁</span><div><strong>Baş + işaret</strong><small>İleri yürü</small></div><kbd>WALK</kbd></div>
+          <div class="gesture-row"><span class="gesture-symbol turn-symbol">↻</span><div><strong>Baş + serçe</strong><small>Sağa dön</small></div><kbd>TURN</kbd></div>
+          <div class="gesture-row"><span class="gesture-symbol turn-symbol left">↺</span><div><strong>Baş + yüzük</strong><small>Sola dön</small></div><kbd>TURN</kbd></div>
+        </section>
+        <div class="scale-chip"><span class="scale-icon">⌗</span><div><strong>1 : 70</strong><small>MİMARİ ÖLÇEK</small></div><span class="scale-live"><i></i> ACTIVE</span></div>
+      </aside>
+
+      <section class="viewport" aria-label="3D mimari sahne">
+        <div id="scene-container"></div>
+        <div class="scene-vignette"></div>
+        <div class="viewport-top"><span><i class="live-dot"></i> LIVE SCENE</span><span class="scene-label">MODEL 01 <b>—</b> COURTYARD STUDY</span></div>
+        <div class="scene-bottom-left"><span class="axis-tag">N</span><span>ORIENTATION</span></div>
+        <div class="viewport-bottom"><span class="hint-key">HAND TRACKING</span><span>PINCH TO MOVE <b>·</b> RELEASE TO STOP</span></div>
+        <div id="vr-status" class="vr-status" aria-live="polite"><i></i><span>READY FOR IMMERSIVE VIEW</span></div>
+        <div class="video-panel" id="video-panel" hidden>
+          <video id="webcam" playsinline muted></video>
+          <canvas id="landmark-canvas"></canvas>
+          <span class="camera-badge"><i></i> HAND TRACKING</span>
+        </div>
+        <div class="fps-badge"><span id="fps">—</span> FPS</div>
+      </section>
+
+      <aside class="debug-panel">
+        <div class="debug-title"><span>SESSION MONITOR</span><span class="monitor-icon">⌘</span></div>
+        <div class="debug-status"><span class="status-orb" id="session-orb"></span><div><strong id="session-label">Desktop ready</strong><small id="session-sub">Waiting for input</small></div><span class="status-pill" id="session-pill">IDLE</span></div>
+        <div class="debug-section-label">TRACKING DATA</div>
+        <dl class="metrics">
+          <div><dt>XR SESSION</dt><dd id="xr-state">Inactive</dd></div>
+          <div><dt>HAND TRACKING</dt><dd id="hand-state">Not started</dd></div>
+          <div><dt>ACTIVE HAND</dt><dd id="active-hand">—</dd></div>
+          <div><dt>ACTIVE PINCH</dt><dd id="active-pinch">—</dd></div>
+        </dl>
+        <div class="debug-section-label motion-label">MOTION</div>
+        <div class="motion-card"><div class="motion-heading"><span>FORWARD SPEED</span><span id="speed-value">0.00 m/s</span></div><div class="meter"><i id="speed-meter"></i></div><div class="motion-heading rotation-heading"><span>ROTATION</span><span id="rotation-value">0°/s</span></div><div class="meter warm"><i id="rotation-meter"></i></div></div>
+        <div class="debug-footer"><span>SELECTED SCALE</span><strong>1 / 70</strong></div>
+        <div class="tracking-note"><span class="note-icon">✳</span><p>VR’da gerçek baş takibi korunur. El takibi desteklenmiyorsa durum burada gösterilir.</p></div>
+      </aside>
+    </section>
+    <footer class="footer"><span>DESIGNED FOR QUEST 3 + DESKTOP</span><span>THREE.JS <b>·</b> WEBXR <b>·</b> MEDIAPIPE</span><a href="./README.md">PROJECT NOTES ↗</a></footer>
+  </main>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
